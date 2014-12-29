@@ -107,7 +107,8 @@ class Repl(val compilerOpts: List[String], val jars:List[String]=Nil) {
     settings.bootclasspath.value += java.io.File.pathSeparator + settings.classpath.value
 
     // LOG the classpath
-    // debug the classpath → settings.Ylogcp.value = true
+    // debug the classpath ↓
+    //settings.Ylogcp.value = true
 
     //val i = new HackIMain(settings, stdout)
     loop = new HackSparkILoop(stdout)

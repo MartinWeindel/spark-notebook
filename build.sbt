@@ -1,10 +1,12 @@
 import Dependencies._
 
+play.Project.playScalaSettings
+
 organization := "noootsab"
 
 name := "spark-notebook"
 
-version := "0.1.1"
+version := "0.1.2"
 
 maintainer := "Andy Petrella" //Docker
 
@@ -16,7 +18,7 @@ packageName in Docker := "andypetrella/spark-notebook"
 
 scalaVersion := "2.10.4"
 
-ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
+// ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
 
 parallelExecution in Test in ThisBuild := false
 
@@ -40,10 +42,7 @@ scalacOptions += "-deprecation"
 
 scalacOptions ++= Seq("-Xmax-classfile-name", "100")
 
-play.Project.playScalaSettings
-
 dependencyOverrides += "log4j" % "log4j" % "1.2.16"
-
 
 libraryDependencies ++= Seq(
   playDep,
@@ -64,6 +63,7 @@ lazy val sparkNotebook = project.in(file("."))
     .aggregate(subprocess, observable, common, kernel)
     .dependsOn(subprocess, observable, common, kernel)
 
+
 lazy val subprocess =  project.in(file("modules/subprocess"))
                               .settings(
                                 libraryDependencies ++= {
@@ -82,6 +82,14 @@ lazy val subprocess =  project.in(file("modules/subprocess"))
                                   )
                                 }
                               )
+                              .settings(
+                                scalaVersion := "2.10.4",
+                                libraryDependencies ++= Seq(
+                                  "org.scala-lang" % "scala-library" % "2.10.4",
+                                  "org.scala-lang" % "scala-reflect" % "2.10.4",
+                                  "org.scala-lang" % "scala-compiler" % "2.10.4"
+                                )
+                              )
 
 
 lazy val observable = Project(id = "observable", base = file("modules/observable"))
@@ -94,6 +102,9 @@ lazy val observable = Project(id = "observable", base = file("modules/observable
                                   slf4jLog4j,
                                   rxScala
                                 )
+                              )
+                              .settings(
+                                scalaVersion := "2.10.4"
                               )
 
 lazy val common = Project(id = "common", base = file("modules/common"))
@@ -120,6 +131,9 @@ lazy val common = Project(id = "common", base = file("modules/common"))
                                   bokeh
                                 )
                               )
+                              .settings(
+                                scalaVersion := "2.10.4"
+                              )
 
 lazy val kernel = Project(id = "kernel", base = file("modules/kernel"))
                               .dependsOn(common, subprocess, observable)
@@ -141,4 +155,7 @@ lazy val kernel = Project(id = "kernel", base = file("modules/kernel"))
                                   sparkRepl,
                                   sparkSQL
                                 )
+                              )
+                              .settings(
+                                scalaVersion := "2.10.4"
                               )
